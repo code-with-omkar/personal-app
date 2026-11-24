@@ -1,0 +1,19 @@
+# Cloudflare Pages response headers (copied to the build root from /public).
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+# Pages turns <link rel="modulepreload" href="chunk-….js"> into `Link:` headers
+# (Early Hints). Browsers resolve header URLs against the page URL and ignore
+# <base href="/">, so /about/ would preload /about/chunk-….js → 404.
+# Angular already preloads the right URLs from the HTML, so drop the header.
+/*
+  ! Link
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Build output file names are content-hashed (outputHashing: all), so they
+# never change in place and can be cached for a year.
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
