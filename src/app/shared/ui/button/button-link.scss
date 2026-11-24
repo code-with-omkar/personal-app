@@ -1,0 +1,17 @@
+@use 'button' as b;
+
+:host {
+  display: inline-flex;
+}
+
+:host ::ng-deep .btn {
+  @include b.button;
+}
+
+:host ::ng-deep .btn--primary {
+  @include b.primary;
+}
+
+:host ::ng-deep .btn--secondary {
+  @include b.secondary;
+}

@@ -1,0 +1,135 @@
+@use 'mixins' as m;
+
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: block;
+}
+
+.header {
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--color-border);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+  }
+
+  &__brand {
+    color: var(--color-text);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-lg);
+    text-decoration: none;
+  }
+
+  &__toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+
+    @include m.up(md) {
+      display: none;
+    }
+  }
+
+  &__bars,
+  &__bars::before,
+  &__bars::after {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--duration-base) var(--ease-standard),
+      opacity var(--duration-fast) var(--ease-standard);
+  }
+
+  &__bars {
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+    }
+
+    &::before { top: -7px; }
+    &::after { top: 7px; }
+
+    &--open {
+      background: transparent;
+
+      &::before { transform: translateY(7px) rotate(45deg); }
+      &::after { transform: translateY(-7px) rotate(-45deg); }
+    }
+  }
+
+  &__nav {
+    position: absolute;
+    inset: var(--header-height) 0 auto;
+    display: none;
+    padding: var(--space-4) var(--gutter) var(--space-5);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+
+    &--open {
+      display: block;
+    }
+
+    @include m.up(md) {
+      position: static;
+      display: block;
+      padding: 0;
+      background: none;
+      border: 0;
+      box-shadow: none;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include m.up(md) {
+      flex-direction: row;
+      gap: var(--space-5);
+    }
+  }
+
+  &__link {
+    display: block;
+    padding: var(--space-2) 0;
+    color: var(--color-text-muted);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-standard);
+
+    &:hover,
+    &--active {
+      color: var(--color-text);
+    }
+
+    &--active {
+      text-decoration: underline;
+      text-decoration-color: var(--color-primary);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+  }
+}
