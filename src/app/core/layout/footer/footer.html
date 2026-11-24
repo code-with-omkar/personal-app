@@ -1,0 +1,22 @@
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__about">
+      <p class="footer__brand">{{ site.brand.name }}</p>
+      <p class="footer__blurb">{{ site.footer.blurb }}</p>
+    </div>
+
+    @for (column of site.footer.columns; track column.heading) {
+      <nav class="footer__column" [attr.aria-label]="column.heading">
+        <p class="footer__heading">{{ column.heading }}</p>
+        <ul class="footer__list">
+          @for (link of column.links; track link.href) {
+            <li><app-smart-link class="footer__link" [link]="link" /></li>
+          }
+        </ul>
+      </nav>
+    }
+  </div>
+  <div class="footer__legal container">
+    <small>© {{ year }} {{ site.brand.name }}. {{ site.footer.legal }}</small>
+  </div>
+</footer>

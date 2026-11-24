@@ -1,0 +1,63 @@
+@let f = form.controls;
+@let labels = content.labels;
+<section class="contact container">
+  <app-section-header [level]="1" [heading]="content.heading" [intro]="content.lead" />
+
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label for="contact-name">{{ labels.name }}</label>
+      <input
+        id="contact-name"
+        type="text"
+        autocomplete="name"
+        formControlName="name"
+        [attr.aria-invalid]="!!errorFor(f.name)"
+        aria-describedby="contact-name-error"
+      />
+      <p id="contact-name-error" class="field__error" aria-live="polite">{{ errorFor(f.name) }}</p>
+    </div>
+
+    <div class="field">
+      <label for="contact-email">{{ labels.email }}</label>
+      <input
+        id="contact-email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        formControlName="email"
+        [attr.aria-invalid]="!!errorFor(f.email)"
+        aria-describedby="contact-email-error"
+      />
+      <p id="contact-email-error" class="field__error" aria-live="polite">{{ errorFor(f.email) }}</p>
+    </div>
+
+    <div class="field">
+      <label for="contact-message">{{ labels.message }}</label>
+      <textarea
+        id="contact-message"
+        rows="6"
+        formControlName="message"
+        [attr.maxlength]="maxLength"
+        [attr.aria-invalid]="!!errorFor(f.message)"
+        aria-describedby="contact-message-error"
+      ></textarea>
+      <p id="contact-message-error" class="field__error" aria-live="polite">{{ errorFor(f.message) }}</p>
+    </div>
+
+    <div class="honeypot" aria-hidden="true">
+      <label for="contact-website">Website</label>
+      <input id="contact-website" type="text" tabindex="-1" autocomplete="off" formControlName="website" />
+    </div>
+
+    <button class="btn btn--primary" type="submit" [disabled]="status() === 'sending'">
+      {{ status() === 'sending' ? labels.sending : labels.submit }}
+    </button>
+
+    <div class="form__status" role="status" aria-live="polite">
+      @switch (status()) {
+        @case ('success') { <p class="form__success">{{ content.messages.success }}</p> }
+        @case ('error') { <p class="form__failure">{{ content.messages.error }}</p> }
+      }
+    </div>
+  </form>
+</section>

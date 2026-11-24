@@ -1,0 +1,24 @@
+<article class="about container">
+  <app-section-header [level]="1" [heading]="content.heading" [intro]="content.lead" />
+
+  <div class="about__body">
+    @for (paragraph of content.paragraphs; track $index) {
+      <p>{{ paragraph }}</p>
+    }
+  </div>
+
+  <section aria-labelledby="milestones-heading">
+    <h2 id="milestones-heading" class="visually-hidden">Milestones</h2>
+    <ol class="timeline">
+      @for (m of content.milestones; track m.year) {
+        <li class="timeline__item">
+          <span class="timeline__year">{{ m.year }}</span>
+          <div>
+            <h3>{{ m.title }}</h3>
+            <p>{{ m.body }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </section>
+</article>

@@ -1,0 +1,35 @@
+@let hero = content.hero;
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="container hero__inner">
+    <p class="hero__eyebrow">{{ hero.eyebrow }}</p>
+    <h1 id="hero-heading" class="hero__heading">{{ hero.heading }}</h1>
+    <p class="hero__sub">{{ hero.subheading }}</p>
+    <div class="hero__ctas">
+      @for (cta of hero.ctas; track cta.href) {
+        <app-button-link [cta]="cta" />
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section container" aria-labelledby="features-heading">
+  <app-section-header
+    id="features-heading"
+    class="center"
+    [heading]="content.features.heading"
+    [intro]="content.features.intro"
+  />
+  <div class="features">
+    @for (feature of content.features.items; track feature.id) {
+      <app-card [heading]="feature.title" [icon]="feature.icon">{{ feature.body }}</app-card>
+    }
+  </div>
+</section>
+
+<section class="section container" aria-labelledby="callout-heading">
+  <div class="callout">
+    <h2 id="callout-heading">{{ content.callout.heading }}</h2>
+    <p>{{ content.callout.body }}</p>
+    <app-button-link [cta]="content.callout.cta" />
+  </div>
+</section>

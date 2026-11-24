@@ -1,0 +1,3 @@
+// Global entry. Component styles import `tokens`/`mixins` via includePaths (src/styles).
+@use 'tokens';
+@use 'base';
