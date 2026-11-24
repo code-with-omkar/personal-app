@@ -80,3 +80,55 @@ jobs:
             e2e/.diff/
           if-no-files-found: ignore
           retention-days: 7
+
+  deploy:
+    name: Deploy to Cloudflare Pages
+    # Production deploy only from main, and only after every check passes.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://personal-app-82t.pages.dev
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      CLOUDFLARE_ACCOUNT_ID: 455afa58a11e182bfdec72affd692bc3
+      CLOUDFLARE_PAGES_PROJECT: personal-app
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      # postbuild copies index.csr.html → 404.html so unknown URLs get the
+      # client-rendered 404 page with a real 404 status.
+      - name: Production build + prerender
+        run: npm run build
+
+      - name: Check deploy secret
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Repository secret CLOUDFLARE_API_TOKEN is not set (needs Account → Cloudflare Pages → Edit)."
+            exit 1
+          fi
+
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: >-
+          npx --yes wrangler@3.114.17 pages deploy dist/personal-app/browser
+          --project-name "$CLOUDFLARE_PAGES_PROJECT"
+          --branch main
+          --commit-hash "$GITHUB_SHA"
+          --commit-message "$(git log -1 --pretty=%s)"
+          --commit-dirty=true
